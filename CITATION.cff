@@ -1,0 +1,46 @@
+# This CITATION.cff lets people cite QLedger correctly.
+# GitHub reads this file and shows a "Cite this repository" button on the repo page,
+# which exports BibTeX/APA automatically. See https://citation-file-format.github.io
+cff-version: 1.2.0
+message: "If you use QLedger in your research or software, please cite it using the metadata below."
+title: "QLedger: The Universal Quantum Experiment Lifecycle Platform"
+abstract: >-
+  QLedger is an open-source Python platform that executes quantum circuits across
+  Qiskit, Cirq, and PennyLane through a universal intermediate representation,
+  versions circuits with Git-like history and diffs, runs standardised benchmarks
+  (Quantum Volume, CLOPS, algorithmic fidelity), profiles hardware noise over time,
+  and persists every experiment in a single portable SQLite file for exact
+  reproducibility.
+type: software
+authors:
+  - given-names: Namash
+    family-names: Aggarwal
+    # orcid: "https://orcid.org/0000-0000-0000-0000"   # add your ORCID iD if you have one
+version: 0.1.0
+date-released: 2026-06-06          # update to your actual release date
+license: MIT
+repository-code: "https://github.com/namashworks/qledger"
+url: "https://github.com/namashworks/qledger"
+keywords:
+  - quantum computing
+  - quantum circuits
+  - reproducibility
+  - experiment tracking
+  - benchmarking
+  - noise characterization
+  - version control
+  - qiskit
+  - cirq
+  - pennylane
+
+# ----------------------------------------------------------------------------
+# OPTIONAL — strongest form of citable credit:
+# Archive a release on Zenodo (https://zenodo.org) to mint a permanent DOI,
+# then uncomment and fill in the lines below. A DOI is what gets you cited in
+# academic papers and gives your work a durable, referenceable identity.
+# ----------------------------------------------------------------------------
+# doi: "10.5281/zenodo.XXXXXXX"
+# identifiers:
+#   - type: doi
+#     value: "10.5281/zenodo.XXXXXXX"
+#     description: "Archived snapshot of QLedger v0.1.0"
