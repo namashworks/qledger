@@ -33,14 +33,11 @@ keywords:
   - cirq
   - pennylane
 
-# ----------------------------------------------------------------------------
-# OPTIONAL — strongest form of citable credit:
-# Archive a release on Zenodo (https://zenodo.org) to mint a permanent DOI,
-# then uncomment and fill in the lines below. A DOI is what gets you cited in
-# academic papers and gives your work a durable, referenceable identity.
-# ----------------------------------------------------------------------------
-# doi: "10.5281/zenodo.XXXXXXX"
-# identifiers:
-#   - type: doi
-#     value: "10.5281/zenodo.XXXXXXX"
-#     description: "Archived snapshot of QLedger v0.1.0"
+# Permanent DOI minted by Zenodo on first release. This version-specific DOI
+# cites exactly v0.1.0. (Zenodo also provides a "concept DOI" that always
+# resolves to the latest version — see note in the release docs.)
+doi: "10.5281/zenodo.20577883"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20577883"
+    description: "Archived snapshot of QLedger v0.1.0"
