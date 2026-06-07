@@ -5,6 +5,7 @@
 Execute circuits across Qiskit, Cirq, and PennyLane. Track noise. Benchmark hardware. Version circuits. Persist everything in a portable SQLite file.
 
 [![CI](https://github.com/namashworks/qledger/actions/workflows/ci.yml/badge.svg)](https://github.com/namashworks/qledger/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/qledger.svg)](https://pypi.org/project/qledger/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
@@ -24,8 +25,6 @@ QLedger fixes this with a single platform that:
 - **Enables reproducibility** — every seed, every setting, every result is stored for exact replay
 
 ## Installation
-
-> **Note:** PyPI release pending — until then, install from source (see below). The `pip install qledger` commands will work once the first release is published.
 
 ```bash
 # Core only (no framework dependencies)
