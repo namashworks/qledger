@@ -33,10 +33,10 @@ keywords:
   - cirq
   - pennylane
 
-# Permanent DOI minted by Zenodo on first release. This version-specific DOI
-# cites exactly v0.1.0. (Zenodo also provides a "concept DOI" that always
-# resolves to the latest version — see note in the release docs.)
-doi: "10.5281/zenodo.20577883"
+# Zenodo DOIs. The top-level `doi` is the *concept* DOI — it always resolves
+# to the latest released version. The version-specific DOI for this exact
+# release (v0.1.0) is listed under identifiers.
+doi: "10.5281/zenodo.20577882"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.20577883"
