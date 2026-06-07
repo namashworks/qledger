@@ -6,7 +6,7 @@ Execute circuits across Qiskit, Cirq, and PennyLane. Track noise. Benchmark hard
 
 [![CI](https://github.com/namashworks/qledger/actions/workflows/ci.yml/badge.svg)](https://github.com/namashworks/qledger/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/qledger.svg)](https://pypi.org/project/qledger/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/namashworks/qledger/blob/main/LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 ---
@@ -245,4 +245,4 @@ mypy qledger   # Type check
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/namashworks/qledger/blob/main/LICENSE)
