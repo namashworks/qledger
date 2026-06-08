@@ -21,7 +21,7 @@ QLedger fixes this with a single platform that:
 - **Runs circuits on any framework** — Qiskit, Cirq, PennyLane — through a universal adapter layer
 - **Persists everything** — circuits, results, metadata, seeds, timing, noise profiles — in one portable `.db` file
 - **Versions circuits** — git-like tracking of how your circuits evolve over time
-- **Benchmarks hardware** — Quantum Volume, CLOPS, and algorithmic fidelity benchmarks with standardised scoring
+- **Benchmarks hardware** — a heavy-output (QV-style) benchmark, CLOPS throughput, and algorithmic fidelity (GHZ, QFT)
 - **Tracks noise** — capture T1/T2, gate fidelities, and readout errors over time to monitor hardware drift
 - **Enables reproducibility** — every seed, every setting, every result is stored for exact replay
 
@@ -110,14 +110,14 @@ print(diff.summary_text())  # "+2 gates, -1 gates, depth: 5 -> 4"
 old_circuit = db.checkout_circuit(circuit_id, version=1)
 ```
 
-### 4. Standardised Benchmarks
+### 4. Benchmarks
 
 ```python
 suite = db.benchmark(framework="qiskit")
 
-# Quantum Volume
-qv = suite.run_quantum_volume(backend=my_backend, max_depth=8)
-print(f"Quantum Volume: {qv.details['quantum_volume']}")
+# Heavy-output benchmark (QV-style — see note)
+hop = suite.run_quantum_volume(backend=my_backend, max_depth=8)
+print(f"Heavy-output depth: {hop.details['achieved_depth']}")
 
 # CLOPS (throughput)
 clops = suite.run_clops(num_circuits=100, shots=1024)
@@ -128,8 +128,14 @@ ghz = suite.run_algorithmic(algorithm="ghz", qubit_range=(2, 10))
 print(f"Average fidelity: {ghz.score:.4f}")
 
 # Compare backends
-comparison = suite.compare_backends("quantum_volume", ["backend_a", "backend_b"])
+comparison = suite.compare_backends("heavy_output", ["backend_a", "backend_b"])
 ```
+
+> **Note on the heavy-output benchmark:** it follows the standard heavy-output
+> protocol (ideal-distribution simulation + 2/3 threshold), but the two-qubit
+> ansatz is a single CNOT with random rotations, **not** Haar-random SU(4).
+> It is a proxy indicator and is **not** comparable to spec-compliant Quantum
+> Volume (Cross et al. 2019). True-QV sampling is on the roadmap.
 
 ### 5. Noise Profiling
 

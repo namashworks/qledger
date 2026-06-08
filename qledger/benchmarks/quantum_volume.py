@@ -1,21 +1,27 @@
-"""Quantum Volume benchmark implementation.
+"""Heavy-output benchmark (Quantum-Volume-style).
 
-Quantum Volume (QV) is defined by IBM as the largest square circuit
-(depth = width = d) that a device can execute with heavy output probability
-> 2/3.  QV = 2^d.
+⚠️ NOT spec-compliant Quantum Volume.
+-------------------------------------
+True Quantum Volume (Cross et al. 2019) requires each two-qubit block to be a
+**Haar-random SU(4)** unitary, whose canonical decomposition needs **three**
+CNOTs per pair.  This implementation uses a lighter ansatz — random
+single-qubit rotations around a **single** CNOT — which spans only a restricted
+subset of SU(4), *not* the Haar measure.  The resulting "achieved depth" is
+therefore a **proxy indicator of heavy-output performance**, and the number is
+**not directly comparable to published Quantum Volume figures.**  A true-QV
+implementation (Haar sampling + KAK decomposition) is on the roadmap.
 
-Algorithm
----------
+What this benchmark *does* do correctly
+---------------------------------------
+The heavy-output measurement itself follows the standard protocol:
+
 For each candidate depth d (from 2 to max_depth):
-  1. Generate `num_trials` random SU(4) circuits of width d and depth d.
-  2. Execute each circuit.
-  3. Compute the ideal output distribution (via classical simulation).
-  4. Measure the heavy output probability (HOP):
-     fraction of measured bitstrings whose ideal probability exceeds
-     the median ideal probability.
-  5. If mean HOP > 2/3 with sufficient confidence, depth d passes.
-
-The largest passing d gives QV = 2^d.
+  1. Generate `num_trials` random circuits of width d and depth d.
+  2. Execute each circuit on the backend.
+  3. Compute the **exact ideal** output distribution by classical simulation.
+  4. Measure the heavy-output probability (HOP): the fraction of measured
+     shots whose bitstring has ideal probability above the median.
+  5. If mean HOP > 2/3, depth d passes.
 
 References
 ----------
@@ -138,10 +144,12 @@ def _heavy_outputs(ideal_probs: dict[str, float], num_qubits: int) -> set[str]:
 
 
 def _random_su4_layer(qubits: list[int], rng: random.Random) -> list[Instruction]:
-    """Generate a layer of random SU(4) gates on pairs of qubits.
+    """Generate a layer of random two-qubit blocks on pairs of qubits.
 
-    Approximates SU(4) using a decomposition into single-qubit rotations
-    and CNOT gates, which is the standard approach for QV circuits.
+    NOTE: This is a *restricted* entangling ansatz — random single-qubit
+    rotations around a single CNOT — not a Haar-random SU(4) gate (which
+    would require three CNOTs per pair). See the module docstring: the
+    resulting score is a heavy-output proxy, not spec-compliant Quantum Volume.
     """
     layer: list[Instruction] = []
     shuffled = list(qubits)
@@ -268,18 +276,25 @@ class QuantumVolumeBenchmark:
                     "passed": False,
                 }
 
-        quantum_volume = 2 ** achieved_depth
-
         return BenchmarkResult(
-            benchmark_type="quantum_volume",
+            benchmark_type="heavy_output",
             backend_name=backend_name,
             framework=self._adapter.framework_name,
-            score=float(quantum_volume),
+            # Score = the largest depth whose mean heavy-output probability
+            # cleared the 2/3 threshold. This is a proxy indicator, NOT 2^d
+            # Quantum Volume (see module docstring).
+            score=float(achieved_depth),
             passed=achieved_depth >= 2,
             details={
-                "quantum_volume": quantum_volume,
                 "achieved_depth": achieved_depth,
                 "depth_results": depth_results,
+                "spec_compliant_quantum_volume": False,
+                "note": (
+                    "QV-style heavy-output benchmark. The two-qubit ansatz is a "
+                    "single CNOT with random single-qubit rotations, NOT Haar-random "
+                    "SU(4), so this score is a proxy and is not comparable to "
+                    "published Quantum Volume figures."
+                ),
             },
             parameters={
                 "max_depth": max_depth,

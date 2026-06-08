@@ -177,3 +177,35 @@ class TestCrossFrameworkConversion:
         # Re-convert to verify structural equivalence
         uc2 = adapter.from_native(restored)
         assert uc.content_hash() == uc2.content_hash()
+
+    def test_roundtrip_preserves_unitary(self) -> None:
+        """Qiskit -> UniversalCircuit -> Qiskit must preserve the exact unitary.
+
+        Structural equivalence (content hash) is necessary but not sufficient —
+        this asserts the *operator* is identical (up to global phase) for a
+        non-trivial circuit spanning fixed, parametric, two-qubit, and
+        three-qubit gates. This is the strongest correctness guarantee for the
+        intermediate representation on the Qiskit path.
+        """
+        from qiskit.quantum_info import Operator
+
+        qc = QuantumCircuit(3)  # no measurements — comparing unitaries
+        qc.h(0)
+        qc.cx(0, 1)
+        qc.rx(0.37, 2)
+        qc.ry(1.10, 0)
+        qc.rz(0.73, 1)
+        qc.cz(1, 2)
+        qc.t(0)
+        qc.swap(0, 2)
+        qc.ccx(0, 1, 2)
+        qc.cp(0.91, 1, 2)
+
+        adapter = AdapterRegistry.get("qiskit")
+        uc = adapter.from_native(qc)
+        restored = adapter.to_native(uc)
+
+        # .equiv() compares unitaries up to an unobservable global phase.
+        assert Operator(restored).equiv(Operator(qc)), (
+            "Round-tripped circuit is not unitarily equivalent to the original."
+        )
