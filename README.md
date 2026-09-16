@@ -18,12 +18,18 @@ The quantum computing ecosystem is **fragmented**. Every framework has its own c
 
 QLedger fixes this with a single platform that:
 
-- **Runs circuits on any framework** — Qiskit, Cirq, PennyLane — through a universal adapter layer
-- **Persists everything** — circuits, results, metadata, seeds, timing, noise profiles — in one portable `.db` file
-- **Versions circuits** — git-like tracking of how your circuits evolve over time
-- **Benchmarks hardware** — a heavy-output (QV-style) benchmark, CLOPS throughput, and algorithmic fidelity (GHZ, QFT)
-- **Tracks noise** — capture T1/T2, gate fidelities, and readout errors over time to monitor hardware drift
-- **Enables reproducibility** — every seed, every setting, every result is stored for exact replay
+- **Runs circuits on any framework**: Qiskit, Cirq and PennyLane, through a universal adapter layer
+- **Persists everything**: circuits, results, metadata, seeds, timing and noise profiles, in one portable `.db` file
+- **Versions circuits**: git-like tracking of how your circuits evolve over time
+- **Benchmarks hardware**: a heavy-output (QV-style) benchmark, CLOPS throughput, and algorithmic fidelity (GHZ, QFT)
+- **Tracks noise**: capture T1/T2, gate fidelities, and readout errors over time to monitor hardware drift
+- **Supports reproducible experiments**: records execution seeds, settings and results so runs can be inspected and compared
+
+### Reproducibility scope
+
+For simulators that honor the supplied seeds, repeatable results require the same circuit, shot count, simulator options and software environment. Set both simulator and transpiler seeds where applicable, and preserve the dependency versions and runtime configuration alongside the database. The stored record supports reproducing a run; it does not package the execution environment or guarantee identical results across backend or software changes.
+
+Physical quantum hardware remains stochastic and its calibration can drift. A simulator seed does not make hardware measurements repeat exactly. On real devices, the stored circuit, execution metadata and captured noise snapshots provide an auditable basis for comparing repeated experiments.
 
 ## Installation
 
@@ -56,7 +62,7 @@ with QLedger("my_research.db") as db:
     # Create an experiment
     exp_id = db.create_experiment("Bell States", tags=["entanglement"])
 
-    # Build and run a circuit — everything is saved automatically
+    # Build and run a circuit; everything is saved automatically
     qc = QuantumCircuit(2, 2)
     qc.h(0)
     qc.cx(0, 1)
@@ -69,6 +75,8 @@ with QLedger("my_research.db") as db:
     print(result.most_frequent()) # '11'
     print(result.entropy())       # ~1.000 (near-maximum for 2 equally likely outcomes)
 ```
+
+The counts above illustrate the output shape; exact values depend on the simulator and environment.
 
 ## Core Features
 
@@ -115,7 +123,7 @@ old_circuit = db.checkout_circuit(circuit_id, version=1)
 ```python
 suite = db.benchmark(framework="qiskit")
 
-# Heavy-output benchmark (QV-style — see note)
+# Heavy-output benchmark (QV-style, see note)
 hop = suite.run_quantum_volume(backend=my_backend, max_depth=8)
 print(f"Heavy-output depth: {hop.details['achieved_depth']}")
 
